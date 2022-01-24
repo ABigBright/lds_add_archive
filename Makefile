@@ -4,8 +4,11 @@ srctree := .
 # Q = @
 CC = gcc
 HOSTCC = gcc
+RANLIB = ranlib
 
-export srctree CC HOSTCC 
+KBUILD_BUILTIN := 1
+
+export srctree CC HOSTCC KBUILD_BUILTIN RANLIB
 
 -include scripts/Kbuild.include
 
@@ -15,17 +18,21 @@ export c_flags
 RELEASE_VERSION := "1.0"
 export RELEASE_VERSION
 
-KBUILD_OBJS := ./built-in.a ./liba/built-in.a
+KBUILD_OBJS := scripts/basic liba
 
-all:
-	$(Q)$(MAKE) $(build)=scripts/basic
-	$(Q)$(MAKE) $(build)=. 
+all:$(KBUILD_OBJS)
+	$(Q)$(MAKE) $(build)=. need-builtin=1
+	$(Q)$(RANLIB) ./built-in.a
+	$(Q)$(CC) -o main ./built-in.a
+
+$(KBUILD_OBJS):
+	$(Q)$(MAKE) $(build)=$@ need-builtin=1
 
 clean:
 	$(Q)$(MAKE) $(clean)=scripts/basic
 	$(Q)$(MAKE) $(clean)=. 
 
-.PHONY : clean
+.PHONY : clean $(KBUILD_OBJS)
 
 else
 

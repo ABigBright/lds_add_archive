@@ -80,7 +80,9 @@ endif
 # ===========================================================================
 
 # subdir-builtin and subdir-modorder may contain duplications. Use $(sort ...)
+$(warning real-obj-y = $(real-obj-y))
 subdir-builtin := $(sort $(filter %/built-in.a, $(real-obj-y)))
+$(warning subdir-builtin = $(subdir-builtin))
 subdir-modorder := $(sort $(filter %/modules.order, $(obj-m)))
 
 targets-for-builtin := $(extra-y)
@@ -407,9 +409,6 @@ quiet_cmd_ar_builtin = AR      $@
       cmd_ar_builtin = rm -f $@; $(AR) cDPrST $@ $(real-prereqs)
 
 $(obj)/built-in.a: $(real-obj-y) FORCE
-	echo "==========="
-	echo $(real-obj-y)
-	echo "==========="
 	$(call if_changed,ar_builtin)
 
 #
@@ -495,6 +494,10 @@ endif
 
 else
 
+$(warning KBUILD_BUILTIN = $(KBUILD_BUILTIN))
+$(warning targets-for-builtin = $(targets-for-builtin))
+$(warning subdir-ym = $(subdir-ym))
+
 __build: $(if $(KBUILD_BUILTIN), $(targets-for-builtin)) \
 	 $(if $(KBUILD_MODULES), $(targets-for-modules)) \
 	 $(subdir-ym) $(always-y)
@@ -511,6 +514,13 @@ $(subdir-ym):
 	$(if $(filter $@/, $(KBUILD_SINGLE_TARGETS)),single-build=) \
 	need-builtin=$(if $(filter $@/built-in.a, $(subdir-builtin)),1) \
 	need-modorder=$(if $(filter $@/modules.order, $(subdir-modorder)),1)
+	@echo "================="
+	@echo target = $@
+	@echo subdir-builtin = $(subdir-builtin)
+	@echo filter = $(filter $@/built-in.a, $(subdir-builtin))
+	@echo need-builtin = $(if $(filter $@/built-in.a, $(subdir-builtin)),1)
+	@echo "================="
+
 
 # Add FORCE to the prequisites of a target to force it to be always rebuilt.
 # ---------------------------------------------------------------------------
