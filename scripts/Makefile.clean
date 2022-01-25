@@ -52,6 +52,8 @@ __clean-files   := $(wildcard                                               \
 quiet_cmd_clean = CLEAN   $(obj)
       cmd_clean = rm -rf $(__clean-files)
 
+$(warning subdir-ymn = $(subdir-ymn))
+$(warning __clean-files = $(__clean-files))
 __clean: $(subdir-ymn)
 ifneq ($(strip $(__clean-files)),)
 	$(call cmd,clean)

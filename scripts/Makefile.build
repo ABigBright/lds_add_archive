@@ -42,18 +42,13 @@ include scripts/Kbuild.include
 kbuild-dir := $(if $(filter /%,$(src)),$(src),$(srctree)/$(src))
 kbuild-file := $(if $(wildcard $(kbuild-dir)/Kbuild),$(kbuild-dir)/Kbuild,$(kbuild-dir)/Makefile)
 
-$(info 1. obj-y = $(obj-y))
-$(info 2. always-y = $(always-y))
 include $(kbuild-file)
-$(info 3. obj-y = $(obj-y))
-$(info 4. always-y = $(always-y))
 
 include scripts/Makefile.lib
 
 # Do not include hostprogs rules unless needed.
 # $(sort ...) is used here to remove duplicated words and excessive spaces.
 
-$(info <1 $(hostprogs))
 hostprogs := $(sort $(hostprogs))
 ifneq ($(hostprogs),)
 include scripts/Makefile.host
@@ -510,16 +505,17 @@ endif
 
 PHONY += $(subdir-ym)
 $(subdir-ym):
+	$(Q)echo -e "Start Build : \e[1;31m$@\e[0m"
 	$(Q)$(MAKE) $(build)=$@ \
 	$(if $(filter $@/, $(KBUILD_SINGLE_TARGETS)),single-build=) \
 	need-builtin=$(if $(filter $@/built-in.a, $(subdir-builtin)),1) \
 	need-modorder=$(if $(filter $@/modules.order, $(subdir-modorder)),1)
-	@echo "================="
-	@echo target = $@
-	@echo subdir-builtin = $(subdir-builtin)
-	@echo filter = $(filter $@/built-in.a, $(subdir-builtin))
-	@echo need-builtin = $(if $(filter $@/built-in.a, $(subdir-builtin)),1)
-	@echo "================="
+	$(Q)echo target = $@
+	$(Q)echo subdir-builtin = $(subdir-builtin)
+	$(Q)echo built-in.a = $(filter $@/built-in.a, $(subdir-builtin))
+	$(Q)echo need-builtin = $(if $(filter $@/built-in.a, $(subdir-builtin)),1)
+	$(Q)echo need-modorder = $(if $(filter $@/modules.order, $(subdir-modorder)),1)
+	$(Q)echo -e "End Build : \e[1;31m$@\e[0m"
 
 
 # Add FORCE to the prequisites of a target to force it to be always rebuilt.
