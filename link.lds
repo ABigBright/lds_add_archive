@@ -21,6 +21,18 @@ SECTIONS
   .gnu.version_d  : { *(.gnu.version_d) }
   .gnu.version_r  : { *(.gnu.version_r) }
 
+/*
+You can also specify files within archives by writing a pattern matching the archive, a colon, then the pattern matching the file, with no whitespace around the colon.
+
+‘archive:file’
+matches file within archive
+
+‘archive:’
+matches the whole archive
+
+‘:file’
+matches file but not one in an archive
+*/
   text_liba_test_start = .;
   .texta.liba_test : {
       ./liba.a:(.text)
