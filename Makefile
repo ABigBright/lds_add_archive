@@ -4,8 +4,10 @@ srctree := .
 
 ifeq ($(KBUILD_VERBOSE),1)
   Q =
+  quiet=
 else
   Q = @
+  quiet=quiet_
 endif
 
 CC = gcc
@@ -15,7 +17,7 @@ RANLIB = ranlib
 # define 1 for Makefile.build to generate targets-for-builtin
 KBUILD_BUILTIN := 1
 
-export srctree CC HOSTCC KBUILD_BUILTIN RANLIB Q
+export srctree CC HOSTCC KBUILD_BUILTIN RANLIB Q quiet
 
 # Kbuild.include define basic variable for later use. such as $(build) $(clean)
 -include scripts/Kbuild.include
